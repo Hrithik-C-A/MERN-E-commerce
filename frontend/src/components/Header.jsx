@@ -1,5 +1,6 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
+import { LinkContainer } from 'react-router-bootstrap'
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {FaShoppingCart, FaUser} from 'react-icons/fa';
@@ -9,7 +10,9 @@ const Header = () => {
     <header>
         <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
-        <Navbar.Brand className='px-2' href="/">E-commerce</Navbar.Brand>
+        <LinkContainer to='/'>
+          <Navbar.Brand className='px-2' href="/">E-commerce</Navbar.Brand>
+        </LinkContainer>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -17,8 +20,12 @@ const Header = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link href="/cart"><FaShoppingCart/> Cart</Nav.Link>
-            <Nav.Link href="/login"><FaUser/> Signin</Nav.Link>
+            <LinkContainer to='/cart'>
+              <Nav.Link href="/cart"><FaShoppingCart/> Cart</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to='/login'>
+              <Nav.Link href="/login"><FaUser/> Signin</Nav.Link>
+            </LinkContainer>
           </Nav>
         </Navbar.Collapse>
       </Container>
