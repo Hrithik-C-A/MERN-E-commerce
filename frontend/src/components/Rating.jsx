@@ -3,7 +3,7 @@ import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa'
 
 const Rating = ({value, text}) => {
   return (
-    <div>
+    <div className='text-warning'>
         <span>
             {value >= 1 ? <FaStar/> : value >= 0.5 ? <FaStarHalfAlt/> : <FaRegStar/>}
         </span>
@@ -19,7 +19,7 @@ const Rating = ({value, text}) => {
         <span>
             {value >= 5 ? <FaStar/> : value >= 4.5 ? <FaStarHalfAlt/> : <FaRegStar/>}
         </span>
-        <span className='ms-2'>
+        <span className='ms-2 text-dark'>
             {text ? text : null}
         </span>
     </div>
