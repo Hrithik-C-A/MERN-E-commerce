@@ -9,12 +9,15 @@
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "npm start --prefix frontend",
-    "dev": "npm-run-all --parallel server client"
+    "dev": "npm-run-all --parallel server client",
+    "data:import": "node backend/seeder.js",
+    "data:destroy": "node backend/seeder.js -d"
   },
   "keywords": [],
   "author": "Hrithik C A",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "mongoose": "^7.5.0"
