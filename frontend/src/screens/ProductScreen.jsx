@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
+import Loader from '../components/Loader';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
@@ -9,6 +10,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Rating from '../components/Rating';
+import Message from '../components/Message';
 
 const ProductScreen = () => {
     const { id: productId } = useParams();
@@ -18,8 +20,8 @@ const ProductScreen = () => {
     <>
       <Link className='btn btn-dark text-light my-3' to='/'>Go Back</Link>
       { isLoading ? (
-        <h1>Loading...</h1>
-      ) : error ? (<div>{error?.data?.message || error.error}</div>) 
+        <Loader/>
+      ) : error ? (<Message variant='danger'>{error?.data?.message || error.error}</Message>) 
       :
        (<>
         <Row>
