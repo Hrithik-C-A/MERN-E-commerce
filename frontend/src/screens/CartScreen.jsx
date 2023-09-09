@@ -10,7 +10,7 @@ import  Button  from 'react-bootstrap/Button';
 import  Card  from 'react-bootstrap/Card';
 import { FaTrash } from 'react-icons/fa';
 import Message from '../components/Message';
-import { addToCart } from '../slices/cartSlice';
+import { addToCart, removeFromCart } from '../slices/cartSlice';
 
 const CartScreen = () => {
     const navigate = useNavigate();
@@ -18,6 +18,9 @@ const CartScreen = () => {
     const { cartItems } = useSelector(state => state.cart);
     const addToCartHandler = async(product, qty)=>{
         dispatch(addToCart({...product,qty}))
+    };
+    const removeFromCartHandler = async(id)=>{
+        dispatch(removeFromCart(id))
     };
   return (
     <Row>
@@ -30,7 +33,7 @@ const CartScreen = () => {
             ) : (
                 <ListGroup variant='flush'>
                     { cartItems.map((item)=>{
-                       return <ListGroup.Item>
+                       return <ListGroup.Item key={item._id}>
                             <Row>
                                 <Col md={2}>
                                     <Image src={item.image} alt={item.name} fluid rounded />
@@ -49,7 +52,7 @@ const CartScreen = () => {
                                     </Form.Control>
                                 </Col>
                                 <Col md={2}>
-                                    <Button type='button' variant='light'><FaTrash/></Button>
+                                    <Button type='button' variant='light' onClick={()=> removeFromCartHandler(item._id)}><FaTrash/></Button>
                                 </Col>
                             </Row>
                         </ListGroup.Item>
