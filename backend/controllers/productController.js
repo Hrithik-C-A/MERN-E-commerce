@@ -9,11 +9,12 @@ const getProducts = asyncHandler(async(req, res)=>{
 const getProductById = asyncHandler((async(req, res)=>{
     const productId = req.params.id;
     const product = await Product.findById(productId);
-    if(!product){
+    if(product){
+      return res.json(product);
+    }else{
         res.status(404);
         throw new Error('Resource not found');
     }
-    res.json(product);
 }));
 
 export { getProducts ,getProductById }
