@@ -1,6 +1,7 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 //User Control
 const authUser = asyncHandler(async(req, res)=>{
@@ -11,6 +12,15 @@ const authUser = asyncHandler(async(req, res)=>{
     const matchPassword = await bcrypt.compare(password, user.password);//There is also an alternative way to check password within the userModel.js
 
     if(user && matchPassword){
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== 'development',
+            sameSite: 'strict',
+            maxAge: 1 * 24 * 60 * 60 * 1000
+        })
+
         res.json({
             _id: user._id,
             name: user.name,
