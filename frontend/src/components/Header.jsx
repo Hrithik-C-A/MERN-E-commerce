@@ -6,9 +6,15 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {FaShoppingCart, FaUser} from 'react-icons/fa';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const Header = () => {
   const { cartItems } = useSelector(state => state.cart);
+  const { userInfo } = useSelector(state => state.auth);
+
+  const logoutHandler = ()=>{
+    console.log('Successfully logged out')
+  };
 
   return (
     <header>
@@ -20,7 +26,7 @@ const Header = () => {
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
-            className="ms-auto my-2 px-2 my-lg-0"
+            className="ms-auto my-2 mx-5 px-1 my-lg-0"
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
@@ -33,9 +39,22 @@ const Header = () => {
                 </Badge>
               )}</Nav.Link>
             </LinkContainer>
-            <LinkContainer to='/login'>
-              <Nav.Link href="/login"><FaUser/> Signin</Nav.Link>
-            </LinkContainer>
+            { userInfo ? (
+              <NavDropdown title={userInfo.name} id='username'>
+                <LinkContainer to='/profile'>
+                  <NavDropdown.Item>
+                    Profile
+                  </NavDropdown.Item>
+                </LinkContainer>
+                <NavDropdown.Item onClick={logoutHandler}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+                  <LinkContainer to='/login'>
+                    <Nav.Link href="/login"><FaUser/> Sign In</Nav.Link>
+                  </LinkContainer>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
