@@ -9,9 +9,7 @@ const authUser = asyncHandler(async(req, res)=>{
 
     const user = await User.findOne({ email: email });
 
-    const matchPassword = await bcrypt.compare(password, user.password);//There is also an alternative way to check password within the userModel.js
-
-    if(user && matchPassword){
+    if(user && (await user.matchPassword(password))){
         generateToken(res, user._id);
 
         res.status(200).json({
@@ -37,12 +35,10 @@ const registerUser = asyncHandler(async(req, res)=>{
         throw new Error('User already exists');
     }
 
-    const hasedPassword = await bcrypt.hashSync(password, 10);
-
     const user = await User.create({
         name,
         email,
-        password: hasedPassword
+        password
     });
 
     if(user){
