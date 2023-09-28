@@ -10,7 +10,7 @@ const PaymentScreen = () => {
     const cart = useSelector(state => state.cart);
     const { shippingAddress } = cart;
 
-    const [paymentMethod, setPaymentMethod] = useState('PayPal');
+    const [paymentMethod, setPaymentMethod] = useState('RazorPay');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -35,7 +35,7 @@ const PaymentScreen = () => {
          <Form.Group>
             <Form.Label as='legend'>Select Method</Form.Label>
             <Col>
-                <Form.Check type='radio' className='my-2' label='PayPal or Credit Card' id='PayPal' name='paymentMethod' value='PayPal' checked onChange={(e)=>setPaymentMethod(e.target.value)}>
+                <Form.Check type='radio' className='my-2' label='RazorPay or Credit Card' id='RazorPay' name='paymentMethod' value='RazorPay' checked onChange={(e)=>setPaymentMethod(e.target.value)}>
                 </Form.Check>
             </Col>
          </Form.Group>
