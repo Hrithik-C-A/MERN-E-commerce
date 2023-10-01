@@ -1,10 +1,12 @@
 import express from "express";
-import { addOrderItems, getMyOrders, getOrderById, updateOrderToPaid, updateOrderToDelivered, getOrders } from "../controllers/orderController.js";
+import { addOrderItems, getMyOrders, getOrderById, updateOrderToPaid, updateOrderToDelivered, getOrders, createRazorpayOrder, verifyRazorpayOrder } from "../controllers/orderController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.route('/').post(protect, addOrderItems).get(protect, admin, getOrders);
+router.route('/razorpay/createorder').post(protect, createRazorpayOrder);
+router.route('/razorpay/verifyorder').post(protect, verifyRazorpayOrder);
 router.route('/mine').get(protect, getMyOrders);
 router.route('/:id').get(protect, getOrderById)
 router.route('/:id/pay').put(protect, updateOrderToPaid);

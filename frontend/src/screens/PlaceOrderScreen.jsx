@@ -4,10 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
+import { v4 as uuidv4 } from 'uuid';
 import CheckoutSteps from '../components/CheckoutSteps';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { useCreateOrderMutation } from '../slices/ordersApiSlice';
+import { useCreateOrderMutation, usePlaceOrderInRazorpayMutation } from '../slices/ordersApiSlice';
 import { clearCartItems } from '../slices/cartSlice';
 
 
@@ -16,6 +17,7 @@ const PlaceOrderScreen = () => {
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart);
 
+    const [createOrderInRazorpay] = usePlaceOrderInRazorpayMutation();
     const [createOrder, { isLoading, error}] = useCreateOrderMutation();
 
     useEffect(() => {
@@ -28,8 +30,14 @@ const PlaceOrderScreen = () => {
 
     const placeOrderHandler = async () => {
         try {
+
+            const razorpayResponse = await createOrderInRazorpay({ price: cart.totalPrice, currency: 'USD', receipt: `#${uuidv4()}`})
+
+            const orderInfo = razorpayResponse.data.order;
+
             const res = await createOrder({
                 orderItems: cart.cartItems,
+                orderInfo: orderInfo,
                 shippingAddress: cart.shippingAddress,
                 paymentMethod: cart.paymentMethod,
                 itemsPrice: cart.itemsPrice,

@@ -1,8 +1,11 @@
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
 import asyncHandler from "../middleware/asyncHandler.js";
 import Order from "../models/orderModel.js";
 
+
 const addOrderItems = asyncHandler(async(req, res)=>{
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
+    const { orderItems, orderInfo, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
 
     if(orderItems && orderItems.length === 0){
         res.status(400);
@@ -14,6 +17,7 @@ const addOrderItems = asyncHandler(async(req, res)=>{
                 product: x._id,
                 _id: undefined
             })),
+            orderInfo: orderInfo,
             user: req.user._id,
             shippingAddress,
             paymentMethod,
@@ -75,4 +79,52 @@ const getOrders = asyncHandler(async(req, res)=>{
     res.send('get all orders')
 });
 
-export { addOrderItems, getMyOrders, getOrderById, updateOrderToPaid, updateOrderToDelivered, getOrders };
+//Razorpay
+
+const createRazorpayOrder = asyncHandler(async(req, res) => {
+    const {price, currency, receipt, notes} = req.body;
+
+    const amount = price * 100;
+
+    const KEY_ID = process.env.KEY_ID;
+    const KEY_SECRET = process.env.KEY_SECRET; 
+
+    const razorpayInstance = new Razorpay({
+        key_id: `${KEY_ID}`,
+        key_secret: `${KEY_SECRET}`
+    });
+
+    razorpayInstance.orders.create({amount, currency, receipt, notes}, 
+        (err, order)=>{
+          if(!err)
+            res.json({order, KEY_ID});
+          else
+            res.send(err);
+        })
+});
+
+const verifyRazorpayOrder = asyncHandler(async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id } = req.body;
+    const razorpay_signature = req.headers['x-razorpay-signature'];
+
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const KEY_SECRET = process.env.KEY_SECRET;
+
+    const generated_signature = crypto
+          .createHmac("sha256", KEY_SECRET)
+          .update(sign.toString())
+          .digest("hex");
+
+    // console.log('1', razorpay_signature)
+    // console.log('2', generated_signature)
+          
+  if(razorpay_signature===generated_signature){
+    res.json({success:true, message:"Payment has been verified"})
+  }
+  else {
+    res.json({success:false, message:"Payment verification failed"})
+  }
+});
+
+export { addOrderItems, getMyOrders, getOrderById, updateOrderToPaid, updateOrderToDelivered, getOrders, createRazorpayOrder, verifyRazorpayOrder };
