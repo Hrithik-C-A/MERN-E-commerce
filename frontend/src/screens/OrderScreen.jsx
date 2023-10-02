@@ -1,14 +1,69 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom';
+import useRazorpay from 'react-razorpay';
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { useGetOrderDetailsQuery } from '../slices/ordersApiSlice';
+import { useGetOrderDetailsQuery, useGetRazorpayClientIdQuery, useVerifyOrderInRazorpayMutation, usePayOrderMutation } from '../slices/ordersApiSlice';
 
 const OrderScreen = () => {
     const {id: orderId } = useParams();
+    console.log(orderId);
+    const [Razorpay] = useRazorpay();
 
     const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId);
+    const { data: clientId } = useGetRazorpayClientIdQuery();
+    const [ verifyOrder, {isLoading: razorpayVerifyLoading, error: razorpayVerifyError} ] = useVerifyOrderInRazorpayMutation();
+    const [ payOrder ] = usePayOrderMutation();
+
+    const initPayment = (data) => {
+
+        const options = {
+            key: clientId,
+            amount: `${data?.orderInfo?.amount}`,
+            currency: `${data?.orderInfo?.currency}`,
+            name: "Ecommerce",
+            description: "This is a ecommerce app",
+            image: "https://example.com/your_logo",
+            order_id: data?.orderInfo?.id,
+            handler: async (res) => {
+             const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = res;
+             try {
+                const verify = await verifyOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature});
+                await payOrder({ orderId });
+                toast.success(`${verify.data.message} Payment Successful`);
+                refetch();
+             } catch (error) {
+                toast.error('Payment Failed');
+             }
+            //  console.log(verify);
+            },
+            prefill: {
+              name: data?.user?.name,
+              email: data?.user?.email,
+              contact: "",
+            },
+            notes: {
+              address: "Razorpay Corporate Office",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+      
+          const rzpay = new Razorpay(options);
+          rzpay.open();
+    };
+
+    const handlePayment = async (e) => {
+        e.preventDefault();
+        try {
+            initPayment(order);
+        } catch (error) {
+         console.log(error);   
+        }
+    };
 
   return (
     isLoading ? (<Loader/>) : 
@@ -98,6 +153,13 @@ const OrderScreen = () => {
                                 <Col>${order.totalPrice}</Col>
                             </Row>
                         </ListGroup.Item>
+                        { !order.isPaid && (
+                            <ListGroup.Item>
+                                { <div>
+                                    <Button className='bg-dark' onClick={handlePayment}>Pay Now</Button>
+                                </div> }
+                            </ListGroup.Item>
+                        )}
                     </ListGroup>
                 </Card>
                 </Col>

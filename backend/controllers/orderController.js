@@ -39,7 +39,7 @@ const getMyOrders = asyncHandler(async(req, res)=>{
 });
 
 const getOrderById = asyncHandler(async(req, res)=>{
-    const order = await Order.findById(req.params.id).populate('user', 'name, email');
+    const order = await Order.findById(req.params.id).populate('user', 'name email');
 
     if(order){
         res.status(200).json(order);
@@ -52,13 +52,15 @@ const getOrderById = asyncHandler(async(req, res)=>{
 const updateOrderToPaid = asyncHandler(async(req, res)=>{
     const order = await Order.findById(req.params.id);
 
+    console.log('Hiiii',req.params.id);
+
     if (order) {
         order.isPaid = true;
         order.paidAt = Date.now();
         order.paymentResult = {
             id: req.body.id,
             status: req.body.status,
-            update_time: req.body.update_time,
+            // update_time: req.body.update_time,
             email_address: req.body.payer.email_address,
         }
 
@@ -80,6 +82,12 @@ const getOrders = asyncHandler(async(req, res)=>{
 });
 
 //Razorpay
+
+const getRazorpayClientId = asyncHandler(async(req, res) => {
+    const key_id = process.env.KEY_ID;
+
+    res.json(key_id);
+});
 
 const createRazorpayOrder = asyncHandler(async(req, res) => {
     const {price, currency, receipt, notes} = req.body;
@@ -120,11 +128,11 @@ const verifyRazorpayOrder = asyncHandler(async (req, res) => {
     // console.log('2', generated_signature)
           
   if(razorpay_signature===generated_signature){
-    res.json({success:true, message:"Payment has been verified"})
+    res.json({success:true, message:"Payment has been verified."})
   }
   else {
     res.json({success:false, message:"Payment verification failed"})
   }
 });
 
-export { addOrderItems, getMyOrders, getOrderById, updateOrderToPaid, updateOrderToDelivered, getOrders, createRazorpayOrder, verifyRazorpayOrder };
+export { addOrderItems, getMyOrders, getOrderById, updateOrderToPaid, updateOrderToDelivered, getOrders, createRazorpayOrder, verifyRazorpayOrder, getRazorpayClientId };
