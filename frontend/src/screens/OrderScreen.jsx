@@ -42,7 +42,7 @@ const OrderScreen = () => {
              } catch (error) {
                 toast.error('Payment Failed');
              }
-            //  console.log(verify);
+
             },
             prefill: {
               name: data?.user?.name,
