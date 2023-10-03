@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom';
 import useRazorpay from 'react-razorpay';
-import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -37,10 +37,10 @@ const OrderScreen = () => {
                     email: data?.user?.email, 
                     status: 'success'} 
                 });
-                toast.success(`${verify.data.message} Payment Successful`);
+                toast.success(`${verify.data.message} Payment Successful.`);
                 refetch();
              } catch (error) {
-                toast.error('Payment Failed');
+                toast.error('Payment Failed.');
              }
 
             },
