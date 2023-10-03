@@ -13,7 +13,7 @@ const OrderScreen = () => {
 
     const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId);
     const { data: clientId } = useGetRazorpayClientIdQuery();
-    const [ verifyOrder, {isLoading: razorpayVerifyLoading, error: razorpayVerifyError} ] = useVerifyOrderInRazorpayMutation();
+    const [ verifyOrder ] = useVerifyOrderInRazorpayMutation();
     const [ payOrder ] = usePayOrderMutation();
 
     const initPayment = (data) => {
