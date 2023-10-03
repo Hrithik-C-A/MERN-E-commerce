@@ -9,7 +9,6 @@ import { useGetOrderDetailsQuery, useGetRazorpayClientIdQuery, useVerifyOrderInR
 
 const OrderScreen = () => {
     const {id: orderId } = useParams();
-    console.log(orderId);
     const [Razorpay] = useRazorpay();
 
     const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId);
@@ -31,7 +30,13 @@ const OrderScreen = () => {
              const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = res;
              try {
                 const verify = await verifyOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature});
-                await payOrder({ orderId });
+                await payOrder({ orderId: orderId, details: { 
+                    order_id: razorpay_order_id, 
+                    pay_id: razorpay_payment_id, 
+                    pay_signature: razorpay_signature, 
+                    email: data?.user?.email, 
+                    status: 'success'} 
+                });
                 toast.success(`${verify.data.message} Payment Successful`);
                 refetch();
              } catch (error) {

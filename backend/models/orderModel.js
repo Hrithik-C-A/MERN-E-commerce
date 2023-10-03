@@ -44,6 +44,9 @@ const orderSchema = mongoose.Schema({
     paymentResult: {
         id: {type: String},
         status: {type: String},
+        order_id: {type: String},
+        pay_id: {type: String},
+        pay_signature: {type: String},
         // update_time: {type: String},
         email_address: {type: String}
     },
