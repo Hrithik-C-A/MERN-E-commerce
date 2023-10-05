@@ -161,7 +161,7 @@ const OrderScreen = () => {
                         { !order.isPaid && (
                             <ListGroup.Item>
                                 { <div>
-                                    <Button className='bg-dark' onClick={handlePayment}>Pay Now</Button>
+                                    <Button variant='dark' onClick={handlePayment}>Pay Now</Button>
                                 </div> }
                             </ListGroup.Item>
                         )}
