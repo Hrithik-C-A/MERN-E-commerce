@@ -27,8 +27,6 @@ const ProfileScreen = () => {
         }
     }, [userInfo ,userInfo.name, userInfo.email]);
 
-    console.log(password,' || ',confirmPassword)
-
     const submitHandler = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
