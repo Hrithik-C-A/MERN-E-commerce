@@ -60,7 +60,14 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
             }),
             keepUnusedDataFor: 5
         }),
+        getOrders: builder.query({
+            query: () => ({
+                url: ORDERS_URL,
+                credentials: 'include'
+            }),
+            keepUnusedDataFor: 5,
+        }),
     })
 });
 
-export const { useCreateOrderMutation, useGetOrderDetailsQuery, usePlaceOrderInRazorpayMutation, useVerifyOrderInRazorpayMutation, useGetRazorpayClientIdQuery, usePayOrderMutation, useGetMyOrdersQuery } = ordersApiSlice;
+export const { useCreateOrderMutation, useGetOrderDetailsQuery, usePlaceOrderInRazorpayMutation, useVerifyOrderInRazorpayMutation, useGetRazorpayClientIdQuery, usePayOrderMutation, useGetMyOrdersQuery, useGetOrdersQuery } = ordersApiSlice;
