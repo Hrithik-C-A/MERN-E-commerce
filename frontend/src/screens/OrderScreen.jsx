@@ -1,13 +1,16 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom';
 import useRazorpay from 'react-razorpay';
+import { useSelector } from 'react-redux';
 import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { useGetOrderDetailsQuery, useGetRazorpayClientIdQuery, useVerifyOrderInRazorpayMutation, usePayOrderMutation } from '../slices/ordersApiSlice';
+import { useGetOrderDetailsQuery, useGetRazorpayClientIdQuery, useVerifyOrderInRazorpayMutation, usePayOrderMutation, useDeliverOrderMutation } from '../slices/ordersApiSlice';
 
 const OrderScreen = () => {
+    const { userInfo } = useSelector(state => state.auth);
+
     const {id: orderId } = useParams();
     const [Razorpay] = useRazorpay();
 
@@ -15,6 +18,7 @@ const OrderScreen = () => {
     const { data: clientId } = useGetRazorpayClientIdQuery();
     const [ verifyOrder ] = useVerifyOrderInRazorpayMutation();
     const [ payOrder ] = usePayOrderMutation();
+    const [ deliverOrder, { isLoading: loadingDeliver } ] = useDeliverOrderMutation();
 
     const initPayment = (data) => {
 
@@ -67,6 +71,16 @@ const OrderScreen = () => {
             initPayment(order);
         } catch (error) {
          console.log(error);   
+        }
+    };
+
+    const deliverOrderHandler = async () => {
+        try {
+            await deliverOrder(orderId);
+            refetch();
+            toast.success('Order delivered');
+        } catch (error) {
+            toast.error(error?.data?.message || error.message);
         }
     };
 
@@ -165,6 +179,15 @@ const OrderScreen = () => {
                                 </div> }
                             </ListGroup.Item>
                         )}
+
+                        { loadingDeliver && <Loader/> }
+
+                        { userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                            <ListGroup.Item>
+                                <Button type='button' variant='dark' className='btn btn-block' onClick={deliverOrderHandler}>Mark as Delivered</Button>
+                            </ListGroup.Item>
+                        )}
+
                     </ListGroup>
                 </Card>
                 </Col>
