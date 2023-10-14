@@ -7,7 +7,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: PRODUCTS_URL
             }),
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5 // this is remove cache if it is unsed for 5 sec. otherwise uses the if same cache if another component makes the same request is recent cache is used
         }),
         getProductDetails: builder.query({
             query: (productId) => ({
@@ -23,7 +23,16 @@ export const productsApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Product'],
         }),
+        updateProduct: builder.mutation({
+            query: (data) => ({
+                url: `${PRODUCTS_URL}/${data._id}`,
+                method: 'PUT',
+                body: data,
+                credentials: 'include'
+            }),
+            invalidatesTags: ['Product'], // used to clear exisiting product cache
+        }),
     })
 });
 
-export const { useGetProductsQuery, useGetProductDetailsQuery, useCreateProductMutation} = productsApiSlice;
+export const { useGetProductsQuery, useGetProductDetailsQuery, useCreateProductMutation, useUpdateProductMutation } = productsApiSlice;
