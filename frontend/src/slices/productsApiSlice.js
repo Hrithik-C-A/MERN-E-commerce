@@ -4,8 +4,11 @@ import { apiSlice } from "./apiSlice";
 export const productsApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getProducts: builder.query({
-            query: () => ({
-                url: PRODUCTS_URL
+            query: ({ pageNumber }) => ({
+                url: PRODUCTS_URL,
+                params: {
+                    pageNumber,
+                },
             }),
             providesTags: ['Product'], // this will set product otherwise we may have to refresh the page
             keepUnusedDataFor: 5 // this is remove cache if it is unsed for 5 sec. otherwise uses the if same cache if another component makes the same request is recent cache is used
