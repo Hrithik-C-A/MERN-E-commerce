@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 import Loader from '../components/Loader';
 import { Row, Col } from 'react-bootstrap';
@@ -12,6 +12,7 @@ const HomeScreen = () => {
   const { data, isLoading, error } = useGetProductsQuery({ keyword, pageNumber });
   return (
     <>
+        { keyword && <Link to={'/'} className='btn btn-dark mb-4'>Go Back</Link>}
         { isLoading ? 
         (<Loader/>) 
         :

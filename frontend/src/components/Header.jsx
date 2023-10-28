@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import {FaShoppingCart, FaUser} from 'react-icons/fa';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice';
+import SearchBox from './SearchBox';
 
 const Header = () => {
   const { cartItems } = useSelector(state => state.cart);
@@ -40,6 +41,7 @@ const Header = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
+            <SearchBox/>
             <LinkContainer to='/cart'>
               <Nav.Link href="/cart"><FaShoppingCart/> Cart {cartItems.length > 0 && (
                 <Badge pill bg='success' style={{ marginLeft: '5px' }}>
