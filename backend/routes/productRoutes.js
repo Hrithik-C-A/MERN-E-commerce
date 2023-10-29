@@ -11,6 +11,6 @@ router.route('/top').get(getTopProducts);
 
 router.route('/:id').get(checkObjectId, getProductById).put(protect, admin, checkObjectId, updateProduct).delete(protect, admin, checkObjectId, deleteProduct);
 
-router.route('/:id/reviews').post(protect,checkObjectId, createProductReview);
+router.route('/:id/reviews').post(protect, checkObjectId, createProductReview);
 
 export default router;
