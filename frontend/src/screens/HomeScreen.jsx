@@ -6,13 +6,14 @@ import { Row, Col } from 'react-bootstrap';
 import Paginate from '../components/Paginate';
 import Product from '../components/Product';
 import Message from '../components/Message';
+import ProductCarousel from '../components/ProductCarousel';
 
 const HomeScreen = () => {
   const { pageNumber, keyword } = useParams();
   const { data, isLoading, error } = useGetProductsQuery({ keyword, pageNumber });
   return (
     <>
-        { keyword && <Link to={'/'} className='btn btn-dark mb-4'>Go Back</Link>}
+        { !keyword ? <ProductCarousel/> : <Link to={'/'} className='btn btn-dark mb-4'>Go Back</Link>}
         { isLoading ? 
         (<Loader/>) 
         :
