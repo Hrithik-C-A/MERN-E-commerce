@@ -6,6 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import Paginate from '../components/Paginate';
 import Product from '../components/Product';
 import Message from '../components/Message';
+import Meta from '../components/Meta';
 import ProductCarousel from '../components/ProductCarousel';
 
 const HomeScreen = () => {
@@ -19,6 +20,7 @@ const HomeScreen = () => {
         :
          error ? (<Message variant='danger'>{error?.data?.message|| error.error}</Message>) : 
          (<>
+         <Meta />
           <h1>Latest Products</h1>
           <Row>
               {data.products.map(product => {

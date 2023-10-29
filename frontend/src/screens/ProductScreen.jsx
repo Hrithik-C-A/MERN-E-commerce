@@ -8,6 +8,7 @@ import Loader from '../components/Loader';
 import Rating from '../components/Rating';
 import Message from '../components/Message';
 import { Row, Col, Image, ListGroup, Button, Card, Form } from 'react-bootstrap';
+import Meta from '../components/Meta';
 import { addToCart } from '../slices/cartSlice.js'
 
 
@@ -53,6 +54,7 @@ const ProductScreen = () => {
       ) : error ? (<Message variant='danger'>{error?.data?.message || error.error}</Message>) 
       :
        (<>
+       <Meta title={product.name} description={product.description}/>
         <Row>
         <Col md={5}>
             <Image src={product.image} alt={product.name} fluid/>
