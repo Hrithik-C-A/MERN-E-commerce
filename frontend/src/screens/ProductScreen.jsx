@@ -1,7 +1,7 @@
-import React,{ useState } from 'react';
+import React,{ useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { useGetProductDetailsQuery, useCreateReviewMutation } from '../slices/productsApiSlice';
+import { useGetProductDetailsQuery, useCreateReviewMutation, useUpdateProductReviewMutation } from '../slices/productsApiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
@@ -20,10 +20,13 @@ const ProductScreen = () => {
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const [reviewId, setReviewId] = useState('');
 
     const { data: product, refetch, isLoading, error } = useGetProductDetailsQuery(productId);
 
     const [createReview, { isLoading: loadingProductReview, }] = useCreateReviewMutation();
+
+    const [updateReview, { isLoading: loadingReviewUpdate }] = useUpdateProductReviewMutation();
 
     const { userInfo } = useSelector((state) => state.auth);
 
@@ -32,9 +35,17 @@ const ProductScreen = () => {
         navigate('/cart')
     };
 
-    const reviewExists = (userId) => {
-            return product.reviews.find(review => review.user === userId);
-    };
+    const reviewExists = useCallback((userId) => {
+        return product.reviews.find(review => review.user === userId);
+    }, [product?.reviews]);
+
+    useEffect(() => {
+        if(product && reviewExists(userInfo?._id)) {
+            setRating(reviewExists(userInfo?._id)?.rating)
+            setComment(reviewExists(userInfo?._id)?.comment);
+            setReviewId(reviewExists(userInfo?._id)._id)
+        }
+    },[product, reviewExists, userInfo?._id]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -45,6 +56,19 @@ const ProductScreen = () => {
             toast.success('Review Submitted');
             setRating(0);
             setComment('');
+        } catch (error) {
+            toast.error(error?.data?.message || error.error);
+        }
+    };
+
+    const reviewUpdateSubmitHandler = async (e) => {
+        e.preventDefault();
+
+        try {
+            await updateReview({ productId ,reviewId, rating, comment }).unwrap();
+            refetch();
+            toast.success('Review Updated');
+            setReviewId('');
         } catch (error) {
             toast.error(error?.data?.message || error.error);
         }
@@ -130,11 +154,12 @@ const ProductScreen = () => {
                     )) }
                     <ListGroup.Item>
                         { loadingProductReview && <Loader/> }
+                        { loadingReviewUpdate && <Loader/>}
                         { userInfo ? ( reviewExists(userInfo._id) ? 
                             (
                                 <>
                             <h2 className='border p-2 rounded'>Edit Your Review</h2>   
-                            <Form onSubmit={ submitHandler }>
+                            <Form onSubmit={ reviewUpdateSubmitHandler }>
                                 <Form.Group controlId='rating' className='my-2'>
                                     <Form.Label>Rating</Form.Label>
                                     <Form.Control as='select' value={rating} onChange={(e) => setRating(e.target.value)}>
@@ -151,7 +176,7 @@ const ProductScreen = () => {
                                     <Form.Control as='textarea' row='3' value={comment} onChange={(e) => setComment(e.target.value)}></Form.Control>
                                 </Form.Group>
 
-                                <Button type='submit' variant='dark' disabled={loadingProductReview}>Submit</Button>
+                                <Button type='submit' variant='dark' disabled={loadingProductReview}>Update</Button>
                             </Form>
                             </> 
                             ) : (
