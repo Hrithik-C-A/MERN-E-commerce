@@ -114,10 +114,33 @@ const createProductReview = asyncHandler(async(req, res)=>{
     }
 });
 
+const updateProductReview = asyncHandler(async(req, res)=>{
+    const { rating, comment, reviewId } = req.body;
+
+    const product = await Product.findById(req.params.id);
+
+    const review = product.reviews.find(review => review._id.equals(reviewId));
+
+    if (review) {
+        review.rating = rating;
+        review.comment = comment;
+
+        product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+
+        await product.save();
+        
+        res.json(review);
+    } else {
+        res.status(404);
+        throw new Error('Resource  Not Found');
+    }
+
+});
+
 const getTopProducts = asyncHandler((async(req, res)=>{
     const products = await Product.find({}).sort({ rating: -1 }).limit(3);
 
     res.status(200).json(products)
 }));
 
-export { getProducts ,getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts };
+export { getProducts ,getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, updateProductReview };
