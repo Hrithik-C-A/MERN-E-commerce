@@ -13,8 +13,8 @@ const Meta = ({ title, description, keywords }) => {
 
 Meta.defaultProps = {
     title: 'Welcome to Ecommerce App',
-    description: 'We will sell the best product for cheap',
-    keywords: 'elctronics, buy electronics, cheap electronics'
+    description: 'Best products, lowest prices.',
+    keywords: 'electronics, buy electronics, cheap electronics'
 };
 
 export default Meta
