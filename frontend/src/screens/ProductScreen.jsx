@@ -1,7 +1,7 @@
 import React,{ useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { useGetProductDetailsQuery, useCreateReviewMutation, useUpdateProductReviewMutation } from '../slices/productsApiSlice';
+import { useGetProductDetailsQuery, useCreateReviewMutation, useUpdateProductReviewMutation, useDeleteProductReviewMutation } from '../slices/productsApiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
@@ -27,6 +27,8 @@ const ProductScreen = () => {
     const [createReview, { isLoading: loadingProductReview, }] = useCreateReviewMutation();
 
     const [updateReview, { isLoading: loadingReviewUpdate }] = useUpdateProductReviewMutation();
+
+    const [deleteReview, { isLoading: loadingReviewDelete }] = useDeleteProductReviewMutation();
 
     const { userInfo } = useSelector((state) => state.auth);
 
@@ -64,14 +66,36 @@ const ProductScreen = () => {
     const reviewUpdateSubmitHandler = async (e) => {
         e.preventDefault();
 
-        try {
-            await updateReview({ productId ,reviewId, rating, comment }).unwrap();
-            refetch();
-            toast.success('Review Updated');
-            setReviewId('');
-        } catch (error) {
-            toast.error(error?.data?.message || error.error);
+        if (window.confirm('Are you sure want to update your review?')) {
+            try {
+                await updateReview({ productId ,reviewId, rating, comment }).unwrap();
+                refetch();
+                toast.success('Review Updated');
+            } catch (error) {
+                toast.error(error?.data?.message || error.error);
+            }
+        } else {
+            setRating(reviewExists(userInfo?._id)?.rating)
+            setComment(reviewExists(userInfo?._id)?.comment);
         }
+    };
+
+    const deleteSubmitHandler = async (e) => {
+        e.preventDefault();
+
+        if (window.confirm('Are you sure want to delete your review?')) {
+            try {
+                await deleteReview({ productId, reviewId }).unwrap();
+                refetch();
+                toast.success('Review Deleted');
+                setReviewId('');
+                setRating('');
+                setComment('');
+            } catch (error) {
+                toast.error(error?.data?.message || error.error);
+            }
+        }
+
     };
 
   return (
@@ -175,8 +199,11 @@ const ProductScreen = () => {
                                 <Form.Group controlId='comment' className='my-2'>
                                     <Form.Control as='textarea' row='3' value={comment} onChange={(e) => setComment(e.target.value)}></Form.Control>
                                 </Form.Group>
+                                <div className='d-flex justify-content-between'>
+                                    <Button type='submit' variant='dark' disabled={loadingReviewUpdate}>Update</Button>
 
-                                <Button type='submit' variant='dark' disabled={loadingProductReview}>Update</Button>
+                                    <Button type='button' variant='danger' disabled={loadingReviewDelete} onClick={deleteSubmitHandler}>Delete</Button>
+                                </div>
                             </Form>
                             </> 
                             ) : (

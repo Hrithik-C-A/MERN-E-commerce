@@ -1,5 +1,5 @@
 import express from "express";
-import { getProductById, getProducts, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, updateProductReview } from "../controllers/productController.js";
+import { getProductById, getProducts, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, updateProductReview, deleteProductReview } from "../controllers/productController.js";
 import { protect, admin } from '../middleware/authMiddleware.js';
 import checkObjectId from "../middleware/checkObjectId.js";
 
@@ -11,6 +11,6 @@ router.route('/top').get(getTopProducts);
 
 router.route('/:id').get(checkObjectId, getProductById).put(protect, admin, checkObjectId, updateProduct).delete(protect, admin, checkObjectId, deleteProduct);
 
-router.route('/:id/reviews').post(protect, checkObjectId, createProductReview).put(protect, checkObjectId, updateProductReview);
+router.route('/:id/reviews').post(protect, checkObjectId, createProductReview).put(protect, checkObjectId, updateProductReview).delete(protect, checkObjectId, deleteProductReview );
 
 export default router;
