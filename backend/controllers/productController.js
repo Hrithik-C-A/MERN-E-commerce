@@ -137,20 +137,39 @@ const updateProductReview = asyncHandler(async(req, res)=>{
 
 });
 
-const deleteProductReview = asyncHandler(async(req, res)=>{
-
+const deleteProductReview = asyncHandler(async (req, res) => {
     const { productId, reviewId } = req.body;
+  
+    const review = await Product.findByIdAndUpdate(
+      { _id: productId },
+      { $pull: { reviews: { _id: reviewId } } }
+    );
+  
+    if (!review) {
+      res.status(404);
+      throw new Error('Resource Not Found');
+    }
+  
+    const product = await Product.findById({ _id: productId });
+  
+    product.numReviews = product.reviews.length;
 
-    const product = await Product.findByIdAndUpdate({_id: productId }, { $pull: { reviews: { _id: reviewId } } });
+    const totalNumReviews = product.reviews.length;
+    const totalNumRating = product.reviews.reduce((acc, item) => item.rating + acc, 0);
 
-    if (!product) {
-        res.status(404);
-        throw new Error('Resource  Not Found');
+    let newRating = totalNumRating / totalNumReviews;
+
+    if ( totalNumReviews === 0 || totalNumRating === 0) {
+        newRating = 0;
     }
 
+    product.rating = newRating;
+  
     await product.save();
+  
     res.json({ message: 'Review Deleted.' });
-});
+  });
+  
 
 const getTopProducts = asyncHandler((async(req, res)=>{
     const products = await Product.find({}).sort({ rating: -1 }).limit(3);
