@@ -7,8 +7,9 @@ import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import Rating from '../components/Rating';
 import Message from '../components/Message';
-import { Row, Col, Image, ListGroup, Button, Card, Form } from 'react-bootstrap';
+import { Row, Col, ListGroup, Button, Card, Form } from 'react-bootstrap';
 import Meta from '../components/Meta';
+import ImageMagnifier from '../components/ImageMagnifier.jsx';
 import { addToCart } from '../slices/cartSlice.js'
 
 
@@ -109,7 +110,7 @@ const ProductScreen = () => {
        <Meta title={product.name} description={product.description}/>
         <Row>
         <Col md={5}>
-            <Image src={product.image} alt={product.name} fluid/>
+            <ImageMagnifier src={product.image} alt={product.name} height={'auto'} width={'100%'} />
         </Col>
         <Col md={4}>
         <ListGroup variant="flush">
