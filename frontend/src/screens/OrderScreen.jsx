@@ -28,7 +28,7 @@ const OrderScreen = () => {
             currency: `${data?.orderInfo?.currency}`,
             name: "Ecommerce",
             description: "This is a ecommerce app",
-            image: "https://example.com/your_logo",
+            image: "https://imageupload.io/yRtRXBGKZ39uiI6",
             order_id: data?.orderInfo?.id,
             handler: async (res) => {
              const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = res;
