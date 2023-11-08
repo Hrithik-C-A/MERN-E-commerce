@@ -57,7 +57,7 @@ This environment variable specifies the port that the Express server will listen
 FRONTEND_URI = http://localhost:3000
 ```
 
-This environment variable holds the URL of the frontend application. The backend server uses this URL to redirect users to the frontend after successful authentication or other actions.
+This environment variable specifies the URL of the frontend application. The provided code uses this URL to set the origin option for the CORS middleware.
 
 ```
 MONGO_URI
