@@ -31,6 +31,18 @@ A fully functional e-commerce application built with the MERN stack, offering a 
 ## Demo
 
 
+User features #1
+
+https://github.com/Hrithik-C-A/MERN-E-commerce/assets/117261838/48fc8333-879c-45ab-a6ba-e0fcfae323c0
+
+User features #2
+
+https://github.com/Hrithik-C-A/MERN-E-commerce/assets/117261838/91efbe19-30bb-4c9d-b0a9-344e098ae4d2
+
+Admin features
+
+https://github.com/Hrithik-C-A/MERN-E-commerce/assets/117261838/aac95f99-4d73-4f51-80c4-f3a4a262775e
+
 
 
 ## Environment Variables
