@@ -141,7 +141,7 @@ To start both backend and frontend server:
    npm run dev
    ```
 
-Open the application in your browser at https://locall.host/3000/.
+Open the application in your browser at http://localhost:3000/.
 
 **Additional Commands**
 
